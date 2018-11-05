@@ -1,0 +1,58 @@
+{
+  "name": "sequelize-event-stream",
+  "version": "0.1.0",
+  "description": "Event publishing capabilities for your sequelize's models using hooks",
+  "main": "index.js",
+  "scripts": {
+    "docs": "./node_modules/.bin/esdoc",
+    "lint": "./node_modules/.bin/eslint lib",
+    "test": "npm run test-unit && npm run test-integration",
+    "test-unit": "mocha -t 30000 --reporter spec \"test/unit/**/*.js\"",
+    "test-integration": "mocha -t 30000 --reporter spec \"test/integration/**/*.test.js\"",
+    "cover": "npm run cover-unit && npm run cover-integration && npm run merge-coverage",
+    "cover-integration": "nyc --reporter=text-lcov > coverage/lcov-integration.info mocha test/integration/**/*.test.js",
+    "cover-unit": "nyc --reporter=text-lcov > coverage/lcov-unit.info mocha test/unit/**/*.test.js",
+    "merge-coverage": "lcov-result-merger \"coverage/*.info\" \"coverage/lcov.info\"",
+    "cover-unit-html": "nyc --reporter=html mocha test/unit/**/*.test.js"
+  },
+  "repository": {
+    "url": "https://github.com/mvillarrealb/sequelize-event-stream.git",
+    "type": "git"
+  },
+  "author": "Marco Villarreal <erick.slayer.m.v@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=10.9.0"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "aws-sdk": "^2.348.0",
+    "debug": "^4.1.0",
+    "kafka-node": "^3.0.1",
+    "sequelize": "^4.39.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-mocha": "^5.2.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "^7.11.1",
+    "lcov-result-merger": "^3.1.0",
+    "nyc": "^12.0.2",
+    "mocha": "^5.2.0",
+    "prettier": "^1.14.3",
+    "sinon": "^7.1.1",
+    "sqlite3": "^4.0.2"
+  }
+}

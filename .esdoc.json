@@ -1,0 +1,49 @@
+{
+  "source": "./lib",
+  "destination": "./docs",
+  "plugins": [
+    {
+      "name": "esdoc-standard-plugin",
+      "option": {
+        "lint": {
+          "enable": true
+        },
+        "coverage": {
+          "enable": false
+        },
+        "accessor": {
+          "access": [
+            "public"
+          ],
+          "autoPrivate": true
+        },
+        "undocumentIdentifier": {
+          "enable": false
+        },
+        "unexportedIdentifier": {
+          "enable": true
+        },
+        "typeInference": {
+          "enable": true
+        },
+        "brand": {
+          "title": "sequelize-event-stream",
+          "description": "Event publishing capabilities for your sequelize's models using hooks.",
+          "repository": "https://github.com/mvillarrealb/sequelize-event-stream.git"
+        },
+        "manual": {
+          "globalIndex": true,
+          "index": "./README.md",
+          "asset": "./docs/images",
+          "files": [
+            "./docs/pages/getting-started.md",
+            "./docs/pages/local_listeners.md",
+            "./docs/pages/using-rabbitmq.md",
+            "./docs/pages/using-kafka.md",
+            "./docs/pages/using-sqs.md"
+          ]
+        }
+      }
+    }
+  ]
+}

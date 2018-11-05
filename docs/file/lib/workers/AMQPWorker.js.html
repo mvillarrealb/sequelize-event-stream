@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/workers/AMQPWorker.js | sequelize-event-stream</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Event publishing capabilities for your sequelize&apos;s models using hooks."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="sequelize-event-stream"><meta property="twitter:description" content="Event publishing capabilities for your sequelize&apos;s models using hooks."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/mvillarrealb/sequelize-event-stream.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SequelizeEventStream.js~SequelizeEventStream.html">SequelizeEventStream</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#workers">workers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/workers/AMQPWorker.js~AMQPWorker.html">AMQPWorker</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/workers/EventWorker.js~EventWorker.html">EventWorker</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/workers/EventWorkerFactory.js~EventWorkerFactory.html">EventWorkerFactory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/workers/KafkaWorker.js~KafkaWorker.html">KafkaWorker</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/workers/AMQPWorker.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const AMQP = require(&apos;amqplib&apos;);
+const debug = require(&apos;debug&apos;)(&apos;sequelize-event-stream:workers:AMQPWorker&apos;);
+const EventWorker = require(&apos;./EventWorker&apos;);
+/**
+ * AMQPWorker represents a Event dispatch Worker
+ * implementing rabbitmq producer to send
+ * messages
+ * @author Marco Villarreal
+ */
+class AMQPWorker extends EventWorker {
+  constructor(config) {
+    super(config);
+    this.exchange = config.exchange;
+    this.connectURI = config.connectURI;
+    this.channel = null;
+    this.awaitingCreation = false;
+    this.validate(config.connectURI, [
+      &apos;protocol&apos;,
+      &apos;port&apos;,
+      &apos;hostname&apos;,
+      &apos;username&apos;,
+      &apos;password&apos;,
+      &apos;vhost&apos;
+    ]);
+  }
+
+  /**
+   * Static property containing all the queues
+   * created by the worker as the deployment
+   * topology
+   * @static
+   * @property QUEUES
+   * @type {Object}
+   */
+  static get QUEUES() {
+    return {
+      CREATED: &apos;created&apos;,
+      UPDATED: &apos;updated&apos;,
+      DESTROYED: &apos;destroyed&apos;,
+      BULK_CREATED: &apos;bulk-created&apos;,
+      BULK_UPDATED: &apos;bulk-updated&apos;,
+      BULK_DESTROYED: &apos;bulk-destroyed&apos;
+    };
+  }
+
+  /**
+   * Published events to the configured exchange
+   * @async
+   * @param {Object} eventData
+   * @return {Object}
+   */
+  async publish(eventData) {
+    super.publish(eventData);
+    const { event_name } = eventData;
+    const routingKey = event_name.replace(/-/g, &apos;.&apos;);
+    debug(&apos;fetching Getting AMQP Channel...&apos;);
+    const channel = await this.getChannel();
+    debug(`Performing publish to exchange ${this.exchange}, with routing ${routingKey}`);
+    const buffer = Buffer.from(JSON.stringify(eventData), &apos;UTF-8&apos;);
+    const publishResponse = await channel.publish(this.exchange, routingKey, buffer);
+    debug(&apos;Sucessfully published the message&apos;);
+    return publishResponse;
+  }
+
+  /**
+   * Perform the binding of all the topology queues to
+   * the configured exchange
+   * @method bindQueue
+   */
+  async bindQueues() {
+    debug(&apos;Binding exchange to queues&apos;);
+    await Promise.all([
+      this.channel.bindQueue(AMQPWorker.QUEUES.CREATED, this.exchange, &apos;*.created&apos;),
+      this.channel.bindQueue(AMQPWorker.QUEUES.UPDATED, this.exchange, &apos;*.updated&apos;),
+      this.channel.bindQueue(AMQPWorker.QUEUES.DESTROYED, this.exchange, &apos;*.destroyed&apos;),
+      this.channel.bindQueue(AMQPWorker.QUEUES.BULK_CREATED, this.exchange, &apos;*.bulk.created&apos;),
+      this.channel.bindQueue(AMQPWorker.QUEUES.BULK_UPDATED, this.exchange, &apos;*.bulk.updated&apos;),
+      this.channel.bindQueue(AMQPWorker.QUEUES.BULK_DESTROYED, this.exchange, &apos;*.bulk.destroyed&apos;)
+    ]);
+  }
+
+  /**
+   * Check all the queues to be configured, by checking
+   * it will explicity create the queues if they do not exists
+   * @method checkQueues
+   */
+  async checkQueues() {
+    await Promise.all([
+      this.channel.assertQueue(AMQPWorker.QUEUES.CREATED),
+      this.channel.assertQueue(AMQPWorker.QUEUES.UPDATED),
+      this.channel.assertQueue(AMQPWorker.QUEUES.DESTROYED),
+      this.channel.assertQueue(AMQPWorker.QUEUES.BULK_CREATED),
+      this.channel.assertQueue(AMQPWorker.QUEUES.BULK_UPDATED),
+      this.channel.assertQueue(AMQPWorker.QUEUES.BULK_DESTROYED)
+    ]);
+  }
+
+  /**
+   * Returns the channel to the configured rabbitmq broker
+   * @async
+   * @method getChannel
+   * @return {amqp.Channel}
+   */
+  async getChannel() {
+    if (!this.channel) {
+      this.awaitingCreation = true;
+      debug(&apos;Creating new amqp connection&apos;);
+      const connection = await AMQP.connect(this.connectURI);
+      debug(&apos;Creating amqp channel from the connection&apos;);
+      this.channel = await connection.createChannel();
+      debug(&apos;Channel created, asserting exchange&apos;);
+      await this.channel.assertExchange(this.exchange, &apos;topic&apos;, this.exchangeOptions);
+      await this.checkQueues();
+      await this.bindQueues();
+      debug(&apos;Channel is ready to send messages&apos;);
+    }
+    return this.channel;
+  }
+}
+
+module.exports = AMQPWorker;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

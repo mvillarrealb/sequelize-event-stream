@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | sequelize-event-stream</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Event publishing capabilities for your sequelize&apos;s models using hooks."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="sequelize-event-stream"><meta property="twitter:description" content="Event publishing capabilities for your sequelize&apos;s models using hooks."></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/mvillarrealb/sequelize-event-stream.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/getting-started.html"><a href="manual/getting-started.html" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#creating-an-instance" data-ice="link">Creating an Instance</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#attaching-to-sequelize" data-ice="link">Attaching to sequelize</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#trigger-any-hook" data-ice="link">Trigger Any hook</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#check-with-consumers" data-ice="link">Check with consumers</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/local_listeners.html"><a href="manual/local_listeners.html" data-ice="link">Local Listeners</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/local_listeners.html"><a href="manual/local_listeners.html#supported-events" data-ice="link">Supported events</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html" data-ice="link">Using RabbitMQ</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#queue-architecture" data-ice="link">Queue architecture</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#required-configuration" data-ice="link">Required configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#example-initialization" data-ice="link">Example initialization</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#consume-the-messages" data-ice="link">Consume the messages</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html" data-ice="link">Using Apache Kafka</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#topics" data-ice="link">Topics</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#required-configuration" data-ice="link">Required configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#example-initialization" data-ice="link">Example initialization</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#consume-the-messages" data-ice="link">Consume the messages</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html" data-ice="link">Using Amazon SQS</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html#queue-architecture" data-ice="link">Queue architecture</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html#required-configuration" data-ice="link">Required configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html#consume-the-messages" data-ice="link">Consume the messages</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="using-amazon-sqs">Using Amazon SQS</h1><h2 id="queue-architecture">Queue architecture</h2><h2 id="required-configuration">Required configuration</h2><h2 id="consume-the-messages">Consume the messages</h2></div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | sequelize-event-stream</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Event publishing capabilities for your sequelize&apos;s models using hooks."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="sequelize-event-stream"><meta property="twitter:description" content="Event publishing capabilities for your sequelize&apos;s models using hooks."></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/mvillarrealb/sequelize-event-stream.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/getting-started.html"><a href="manual/getting-started.html" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#creating-an-instance" data-ice="link">Creating an Instance</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#attaching-to-sequelize" data-ice="link">Attaching to sequelize</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#trigger-any-hook" data-ice="link">Trigger Any hook</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting-started.html"><a href="manual/getting-started.html#check-with-consumers" data-ice="link">Check with consumers</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/local_listeners.html"><a href="manual/local_listeners.html" data-ice="link">Local Listeners</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/local_listeners.html"><a href="manual/local_listeners.html#supported-events" data-ice="link">Supported events</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html" data-ice="link">Using RabbitMQ</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#queue-architecture" data-ice="link">Queue architecture</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#required-configuration" data-ice="link">Required configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#example-initialization" data-ice="link">Example initialization</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-rabbitmq.html"><a href="manual/using-rabbitmq.html#consume-the-messages" data-ice="link">Consume the messages</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html" data-ice="link">Using Apache Kafka</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#topics" data-ice="link">Topics</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#required-configuration" data-ice="link">Required configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#example-initialization" data-ice="link">Example initialization</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-kafka.html"><a href="manual/using-kafka.html#consume-the-messages" data-ice="link">Consume the messages</a></li>
+</ul>
+  </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html" data-ice="link">Using Amazon SQS</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html#queue-architecture" data-ice="link">Queue architecture</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html#required-configuration" data-ice="link">Required configuration</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/using-sqs.html"><a href="manual/using-sqs.html#consume-the-messages" data-ice="link">Consume the messages</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="using-rabbitmq">Using RabbitMQ</h1><p>To enable rabbitmq support for event streams you just have to use
+the type <strong>amqp</strong> on the SequelizeEventStream Constructor.</p>
+<p>This module uses <a href="https://www.npmjs.com/package/amqplib">amqplib</a> as the rabbitmq library of choice.</p>
+<h2 id="queue-architecture">Queue architecture</h2><h2 id="required-configuration">Required configuration</h2><p>The required configuration is the same used in amqplib, you can check <a href="http://www.squaremobius.net/amqp.node/channel_api.html#connect">here</a> the configuration parameters. </p>
+<p>However the minimum parameters to get the rabbitmq producer to work is:</p>
+<p> connectURI.protocol
+ connectURI.port
+ connectURI.hostname
+ connectURI.username
+ connectURI.password
+ connectURI.vhost</p>
+<h2 id="example-initialization">Example initialization</h2><pre><code class="lang-javascript"><code class="source-code prettyprint">const SequelizeEventStream = require(&apos;sequelize-event-stream&apos;);
+
+const configuration = {
+  type: &apos;amqp&apos;,
+  options: {
+    exchange: &apos;sequelize-event-stream&apos;,
+    connectURI: {
+      protocol: &apos;amqp&apos;,
+      port: 5672,
+      hostname: &apos;127.0.0.1&apos;,
+      username: &apos;rmqadmin&apos;,
+      password: &apos;casa1234&apos;,
+      vhost: &apos;/&apos;
+    }
+  }
+};
+
+const eventStream = new SequelizeEventStream(configuration);
+
+eventStream.attach(sequelize);</code>
+</code></pre>
+<h2 id="consume-the-messages">Consume the messages</h2><p>To check the consumes messages just create a consumer as the following example:</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">  const exchange = &apos;sequelize-event-stream&apos;;
+  const connectionOpts = {
+    protocol: &apos;amqp&apos;,
+    port: 5672,
+    hostname: &apos;127.0.0.1&apos;,
+    username: &apos;rmqadmin&apos;,
+    password: &apos;casa1234&apos;,
+    vhost: &apos;/&apos;
+  };
+  const connection = await AMQP.connect(connectionOpts);
+  const channel = await connection.createChannel();
+  //create a exclusive queue with a random generated name for the consumer exclusively
+  const response = await channel.assertQueue(&apos;&apos;, { exclusive: true });
+  // its binds the queue to the exchange to basically fetch a copy of every message published
+  channel.bindQueue(response.queue, exchange, &apos;#&apos;);
+
+  channel.consume(
+    response.queue,
+    msg =&gt; {
+      let { event_id, event_name, event_model, event_timestamp } = JSON.parse(msg.content.toString());
+      //prints out a table with the event metadata
+      console.table({ event_id, event_name, event_model, event_timestamp });
+    },
+    { noAck: true }
+  );
+</code>
+</code></pre>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

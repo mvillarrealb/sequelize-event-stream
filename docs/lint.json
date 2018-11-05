@@ -1,0 +1,32 @@
+[
+  {
+    "name": "SQSWorker#publish",
+    "filePath": "lib/workers/SQSWorker.js",
+    "lines": [
+      {
+        "lineNumber": 4,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 5,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 6,
+        "line": "   * @param {} eventData"
+      },
+      {
+        "lineNumber": 7,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 8,
+        "line": "  publish(eventData) {"
+      }
+    ],
+    "codeParams": [
+      "eventData"
+    ],
+    "docParams": []
+  }
+]

@@ -1,0 +1,16 @@
+language: node_js
+sudo: true
+node_js:
+  - "10.9.0"
+branches:
+  only:
+    - master
+script:
+  - npm run lint
+  - npm run cover && bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
+#deploy:
+#  provider: npm
+#  email: erick.slayer.m.v@gmail.com
+#  api_key: $NPM_TOKEN
+#  on:
+#    branch: master
